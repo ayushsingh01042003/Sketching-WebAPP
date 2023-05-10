@@ -1,6 +1,9 @@
 const DEFAULT_COLOR = '#333333'
 const DEFAULT_SIZE = 16
 
+let currentColor = DEFAULT_COLOR;
+let currentSize = DEFAULT_SIZE;
+
 const sliderText = document.getElementById("sliderText");
 const sliderValue = document.getElementById("sliderValue");
 const colorBtn = document.getElementById('colorButton');
@@ -9,10 +12,9 @@ const clearBtn = document.getElementById("clearButton");
 const colorPicker = document.getElementById("colorPicker");
 const grid = document.getElementById('grid');
 
-let currentColor = DEFAULT_COLOR;
-let currentSize = DEFAULT_SIZE;
-
 function defaultMode() {
+    currentColor = DEFAULT_COLOR;
+    currentSize = DEFAULT_SIZE;
     colorBtn.click();
 }
 
@@ -53,16 +55,7 @@ clearBtn.addEventListener("click", () => {
     grid.innerHTML = '';
 });
 
-function drawPixel(event) {
-    if (event.target === grid) {
-        const pixel = document.createElement('div');
-        pixel.style.backgroundColor = currentColor;
-        pixel.style.width = `${currentSize}px`;
-        pixel.style.height = `${currentSize}px`;
-        event.target.appendChild(pixel);
-    }
-}
-
+  
 function erasePixel(event) {
     if (event.target !== grid) {
         event.target.remove();
