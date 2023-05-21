@@ -9,51 +9,61 @@ const canvas = document.querySelector(`canvas`);
 
 const DEFAULT_COLOR = '#333333';
 const DEFAULT_SIZE = 16;
-let currentColor = DEFAULT_COLOR;
-let currentSize = DEFAULT_SIZE;
+
+let currentColor = colorPicker.value;
+let currentSize = sliderValue.value;
 
 const colorMode = () => {
     colorBtn.style.backgroundColor = '#dfb3b0c4';
     clearBtn.style.backgroundColor = '';
     eraseBtn.style.backgroundColor = '';
-
-    //code for coloring on the blank space
-    //1. Load the grid
     loadGrid();
-    //2. Call the coloring function
     startColoring();
-
 }
 
 const loadGrid = () => {
     const gridSize = currentSize;
-    const cellWidth = grid.clientWidth / gridSize;
-    const cellHeight = grid.clientHeight / gridSize;
+    const gridWidth = grid.clientWidth;
+    const gridHeight = grid.clientHeight;
+    
+    // Calculate the cell size based on the available space and grid size
+    const cellWidth = gridWidth / gridSize;
+    const cellHeight = gridHeight / gridSize;
 
+    console.log(cellHeight);
+    console.log(cellWidth);
+    
     // Clear the existing grid
     grid.innerHTML = '';
-
-    grid.style.gridTemplateColumns = `repeat(${gridSize}, ${cellWidth}px)`;
-    grid.style.gridTemplateRows = `repeat(${gridSize}, ${cellHeight}px)`;
+    
+    // Set CSS grid properties to adjust columns and rows based on cell size
+    grid.style.gridTemplateColumns = `repeat(${gridSize}, minmax(0, ${cellWidth}px))`;
+    grid.style.gridTemplateRows = `repeat(${gridSize}, minmax(0, ${cellHeight}px))`;
     
     // Create grid cells and append them to the grid container
     for (let i = 0; i < gridSize * gridSize; i++) {
-            const cell = document.createElement('div');
-            cell.classList.add('grid-cell');
-            cell.style.width = `${cellWidth}px`;
-            cell.style.height = `${cellHeight}px`;
-            cell.style.border = '1px solid blue';
-            grid.appendChild(cell);
+        const cell = document.createElement('div');
+        cell.classList.add('grid-cell');
+        cell.style.border = '1px solid blue';
+        grid.appendChild(cell);
     }
-}
+};
 
+// const startColoring = () => {
+//     currentColor = colorPicker.value;
+//     currentSize = sliderValue.value;
 
-const startColoring = () => {
-    currentColor = colorPicker.value;
-    currentSize = sliderValue.value;
-    
+//     grid.addEventListener('click', (event) => {
+//         // Get a reference to the clicked element
+//         const clickedElement = event.target;
 
-}
+//         // Check if the clicked element is a grid cell
+//         if (clickedElement.classList.contains('grid-cell')) {
+//             // Set the background color of the cell to the current color
+//             clickedElement.style.backgroundColor = currentColor;
+//         }
+//     });
+// }
 
 const eraseMode = () => {
     eraseBtn.style.backgroundColor = '#dfb3b0c4';
@@ -73,7 +83,19 @@ clearBtn.addEventListener("click", () => {
 
 sliderValue.addEventListener('input', () => {
     sliderText.textContent = `${sliderValue.value} X ${sliderValue.value}`;
+    currentSize = sliderValue.value;
+    loadGrid();
 });
 
 colorBtn.addEventListener(`click`, colorMode);
 eraseBtn.addEventListener(`click`, eraseMode);
+
+const defaultMode = () => {
+    let currentColor = DEFAULT_COLOR;
+    let currentSize = DEFAULT_SIZE;
+    colorMode();
+}
+
+window.onload = () => {
+    defaultMode();
+}
