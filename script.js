@@ -26,25 +26,27 @@ const colorMode = () => {
 }
 
 const loadGrid = () => {
-    const gridSize = DEFAULT_SIZE; 
-    const gridWidth = grid.clientWidth; 
-    const cellSize = gridWidth / gridSize; 
+    const gridSize = currentSize;
+    const cellWidth = grid.clientWidth / gridSize;
+    const cellHeight = grid.clientHeight / gridSize;
 
     // Clear the existing grid
     grid.innerHTML = '';
-  
+
+    grid.style.gridTemplateColumns = `repeat(${gridSize}, ${cellWidth}px)`;
+    grid.style.gridTemplateRows = `repeat(${gridSize}, ${cellHeight}px)`;
+    
     // Create grid cells and append them to the grid container
-    for (let i = 0; i < gridSize; i++) {
-      for (let j = 0; j < gridSize; j++) {
-        const cell = document.createElement('div');
-        cell.classList.add('grid-cell');
-        cell.style.width = `${cellSize}px`;
-        cell.style.height = `${cellSize}px`;
-        cell.style.border = '1px solid blue'
-        grid.appendChild(cell);
-      }
+    for (let i = 0; i < gridSize * gridSize; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('grid-cell');
+            cell.style.width = `${cellWidth}px`;
+            cell.style.height = `${cellHeight}px`;
+            cell.style.border = '1px solid blue';
+            grid.appendChild(cell);
     }
-} 
+}
+
 
 const startColoring = () => {
     currentColor = colorPicker.value;
@@ -66,6 +68,7 @@ clearBtn.addEventListener("click", () => {
     eraseBtn.style.backgroundColor = '';
 
     //clear the coloring area
+    grid.innerHTML = '';
 })
 
 sliderValue.addEventListener('input', () => {
