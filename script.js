@@ -12,6 +12,7 @@ const DEFAULT_SIZE = 16;
 
 let currentColor = colorPicker.value;
 let currentSize = sliderValue.value;
+let isMousePressed = false;
 
 const colorMode = () => {
     colorBtn.style.backgroundColor = '#dfb3b0c4';
@@ -30,11 +31,8 @@ const loadGrid = () => {
     const cellWidth = gridWidth / gridSize;
     const cellHeight = gridHeight / gridSize;
 
-    console.log(cellHeight);
-    console.log(cellWidth);
-    
-    // Clear the existing grid
-    grid.innerHTML = '';
+    // to get the existing cells
+    const cells = Array.from(grid.getElementsByClassName('grid-cell'));
     
     // Set CSS grid properties to adjust columns and rows based on cell size
     grid.style.gridTemplateColumns = `repeat(${gridSize}, minmax(0, ${cellWidth}px))`;
@@ -44,31 +42,74 @@ const loadGrid = () => {
     for (let i = 0; i < gridSize * gridSize; i++) {
         const cell = document.createElement('div');
         cell.classList.add('grid-cell');
-        cell.style.border = '1px solid blue';
+        // cell.style.border = '1px solid blue';
         grid.appendChild(cell);
     }
 };
 
-// const startColoring = () => {
-//     currentColor = colorPicker.value;
-//     currentSize = sliderValue.value;
+const startColoring = () => {
 
-//     grid.addEventListener('click', (event) => {
-//         // Get a reference to the clicked element
-//         const clickedElement = event.target;
+    currentColor = colorPicker.value;
+    currentSize = sliderValue.value;
 
-//         // Check if the clicked element is a grid cell
-//         if (clickedElement.classList.contains('grid-cell')) {
-//             // Set the background color of the cell to the current color
-//             clickedElement.style.backgroundColor = currentColor;
-//         }
-//     });
-// }
+    grid.addEventListener('mousedown', () => {
+        isMousePressed = true;
+    });
+
+    grid.addEventListener('mouseup', () => {
+        isMousePressed = false;
+    });
+
+    grid.addEventListener('mousemove', (event) => {
+        if (isMousePressed) {
+            const hoveredElement = event.target;
+            if (hoveredElement.classList.contains('grid-cell')) {
+                hoveredElement.style.backgroundColor = currentColor;
+            }
+        }
+    });
+
+    grid.addEventListener('click', (event) => {
+        // Get a reference to the clicked element
+        const clickedElement = event.target;
+
+        // Check if the clicked element is a grid cell
+        if (clickedElement.classList.contains('grid-cell')) {
+            // Set the background color of the cell to the current color
+            clickedElement.style.backgroundColor = currentColor;
+        }
+    });
+}
 
 const eraseMode = () => {
     eraseBtn.style.backgroundColor = '#dfb3b0c4';
     colorBtn.style.backgroundColor = '';
     clearBtn.style.backgroundColor = '';
+
+    grid.addEventListener('mousedown', () => {
+        isMousePressed = true;
+    });
+
+    grid.addEventListener('mouseup', () => {
+        isMousePressed = false;
+    });
+
+    grid.addEventListener('mousemove', (event) => {
+        if (isMousePressed) {
+            const hoveredElement = event.target;
+            if (hoveredElement.classList.contains('grid-cell')) {
+                hoveredElement.style.backgroundColor = `white`;
+            }
+        }
+    });
+
+    grid.addEventListener('click', (event) => {
+        const clickedElement = event.target;
+
+        if (clickedElement.classList.contains('grid-cell')) {
+            clickedElement.style.backgroundColor = `white`;
+        }
+    });
 
 }
 
@@ -86,6 +127,10 @@ sliderValue.addEventListener('input', () => {
     currentSize = sliderValue.value;
     loadGrid();
 });
+
+colorPicker.addEventListener(`input`, () => {
+    currentColor = colorPicker.value;
+})
 
 colorBtn.addEventListener(`click`, colorMode);
 eraseBtn.addEventListener(`click`, eraseMode);
